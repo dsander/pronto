@@ -35,10 +35,11 @@ jobs:
         with:
           coverageCommand: bundle exec rspec
       - if: matrix.ruby-version == '2.4' && github.event_name == 'pull_request'
-        name: Save pull request number
+        name: Save pull request information
         run: |
           mkdir -p ./test_artifacts
           echo ${{ github.event.number }} > ./test_artifacts/PULL_REQUEST_NUMBER
+          echo ${{ github.event.pull_request.base.ref }} > ./test_artifacts/PULL_REQUEST_TARGET_BRANCH
       - if: matrix.ruby-version == '2.4' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v2
         with:

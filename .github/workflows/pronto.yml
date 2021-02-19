@@ -3,6 +3,8 @@ name: Pronto
 on:
   workflow_run:
     workflows: ["Specs"]
+    branches:
+      - '!master'
     types:
       - completed
 
@@ -59,7 +61,7 @@ jobs:
         run: |
           export PATH=$(pwd)/gem_cache/bin:$PATH
           hub pr checkout $(cat PULL_REQUEST_NUMBER)
-          git fetch origin ${{ github.event.pull_request.base.ref }}
+          git fetch origin $(cat PULL_REQUEST_TARGET_BRANCH)
           PRONTO_PULL_REQUEST_ID=$(cat PULL_REQUEST_NUMBER) \
           PRONTO_GITHUB_ACCESS_TOKEN="${{ github.token }}" \
-            pronto run -f github_status github_pr -c origin/${{ github.event.pull_request.base.ref }}
+            pronto run -f github_status github_pr -c origin/$(cat PULL_REQUEST_TARGET_BRANCH)
