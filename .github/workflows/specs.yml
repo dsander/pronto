@@ -35,9 +35,13 @@ jobs:
         with:
           coverageCommand: bundle exec rspec
       - if: matrix.ruby-version == '2.4' && github.event_name == 'pull_request'
-        name: Run pronto
+        name: Save pull request information
         run: |
-          git fetch -q origin ${{ github.context.pull_request.base.sha }}
-          PRONTO_PULL_REQUEST_ID=${{github.event.number}} \
-          PRONTO_GITHUB_ACCESS_TOKEN="${{ github.token }}" \
-            bundle exec pronto run -f github_status github_pr -c origin/${{ github.event.pull_request.base.ref }}
+          mkdir -p ./test_artifacts
+          echo ${{ github.event.number }} > ./test_artifacts/PULL_REQUEST_NUMBER
+          echo ${{ github.event.pull_request.base.ref }} > ./test_artifacts/PULL_REQUEST_TARGET_BRANCH
+      - if: matrix.ruby-version == '2.4' && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_artifacts
+          path: test_artifacts/
