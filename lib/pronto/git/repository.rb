@@ -20,6 +20,10 @@ module Pronto
                           end
 
         patches.find_similar!(renames: true)
+
+
+
+
         Patches.new(self, target, patches)
       end
 
